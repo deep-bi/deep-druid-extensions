@@ -72,7 +72,7 @@ public class EventFilterTest {
     }
 
     private static Event makeEvent(String name, Number value) {
-        return ServiceMetricEvent.builder().build(name, value).build("test", "localhost");
+        return ServiceMetricEvent.builder().setMetric(name, value).build("test", "localhost");
     }
 
     @Test
