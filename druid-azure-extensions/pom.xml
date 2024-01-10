@@ -29,8 +29,8 @@
 
     <parent>
         <groupId>deep.bi</groupId>
-        <artifactId>workflow-test</artifactId>
-        <version>27.2-SNAPSHOT</version>
+        <artifactId>deep-druid-extensions</artifactId>
+        <version>27.0.0</version>
     </parent>
 
     <dependencies>
