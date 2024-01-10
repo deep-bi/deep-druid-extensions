@@ -1,0 +1,129 @@
+name: Release Workflow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    name: Build and Test Extensions
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Fail if branch is not allowed
+        run: |
+          if [[ ! "$GITHUB_REF" =~ ^refs/heads/release/.*$ ]]; then
+          echo "Checkstyle skipped for this branch."
+          exit 1
+          fi
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'adopt'
+          java-version: 8
+
+      - name: Build and test
+        run: |
+          mvn clean test -B 
+
+
+  release:
+    permissions: write-all
+    needs:
+      - build-and-test
+    runs-on: ubuntu-latest
+
+    if: success()
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get Version from Parent's Pom
+        id: get-version
+        run: |
+          echo "Retrieving version from parent pom"
+          version=$(grep -m1 '<version>.*</version>' pom.xml | sed -n 's/.*<version>\(.*\)<\/version>.*/\1/p')
+          echo "Version: $version"
+          echo "content=$version" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.get-version.outputs.content }}
+          release_name: Release ${{ steps.get-version.outputs.content }}
+          draft: false
+          prerelease: false
+
+      - name: Create Azure extensions artifact
+        id: create-azure-extensions-artifact
+        run: |
+          mvn -f druid-azure-extensions/pom.xml clean package -DskipTests
+          mv druid-azure-extensions/target/*.tar.gz ./druid-azure-extensions.tar.gz
+
+      - name: Upload Azure extensions release asset
+        id: upload-azure-ext-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./druid-azure-extensions.tar.gz
+          asset_name: druid-azure-extensions.tar.gz
+          asset_content_type: application/gzip
+
+      - name: Create encrypting password provider artifact
+        id: create-druid-encrypting-password-provider-artifact
+        run: |
+          mvn -f druid-encrypting-password-provider/pom.xml clean package -DskipTests
+          mv druid-encrypting-password-provider/target/*.tar.gz ./druid-encrypting-password-provider.tar.gz
+
+      - name: Upload encrypting password provider release asset
+        id: upload-encrypting-password-provider-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./druid-encrypting-password-provider.tar.gz
+          asset_name: druid-encrypting-password-provider.tar.gz
+          asset_content_type: application/gzip
+
+      - name: Create filtering emitter artifact
+        id: create-druid-filtering-emitter-artifact
+        run: |
+          mvn -f druid-filtering-emitter/pom.xml clean package -DskipTests
+          mv druid-filtering-emitter/target/*.tar.gz ./druid-filtering-emitter.tar.gz
+
+      - name: Upload filtering emitter release asset
+        id: upload-filtering-emitter-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./druid-filtering-emitter.tar.gz
+          asset_name: druid-filtering-emitter.tar.gz
+          asset_content_type: application/gzip
+
+      - name: Create exact distinct count aggregator artifact
+        id: create-exact-distinct-count-aggregator-artifact
+        run: |
+          mvn -f exact-distinct-count-aggregator/pom.xml clean package -DskipTests
+          mv exact-distinct-count-aggregator/target/*.tar.gz ./exact-distinct-count-aggregator.tar.gz
+
+      - name: Upload exact distinct count aggregator release asset
+        id: upload-exact-distinct-count-aggregator-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./exact-distinct-count-aggregator.tar.gz
+          asset_name: exact-distinct-count-aggregator.tar.gz
+          asset_content_type: application/gzip
