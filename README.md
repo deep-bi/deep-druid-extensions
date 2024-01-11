@@ -1,4 +1,6 @@
-# Custom extensions pack for [Apache Druid](https://druid.apache.org/)
+# Deep.BI extensions pack for Apache Druid
+
+This repository is for [Apache Druid](https://druid.apache.org/) extensions that we have created at [Deep.BI](https://www.deep.bi/).
 
 | Extension name                     | Description                                                                                                                        | Docs                                                      |
 |------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------|
