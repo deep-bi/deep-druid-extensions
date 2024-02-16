@@ -24,12 +24,25 @@
 
     <groupId>bi.deep</groupId>
     <artifactId>druid-encrypting-password-provider</artifactId>
+    <name>Encrypting Password Provider</name>
 
     <parent>
         <groupId>deep.bi</groupId>
         <artifactId>deep-druid-extensions</artifactId>
         <version>27.0.0</version>
     </parent>
+
+    <description>
+        Password provider extension for Apache Druid that encrypts runtime configuration passwords using AES algorithm
+        with a hardcoded encryption key.
+    </description>
+
+    <scm>
+        <connection>scm:git:git://github.com/deep-bi/deep-druid-extensions.git</connection>
+        <developerConnection>scm:git:git://github.com/deep-bi/deep-druid-extensions.git</developerConnection>
+        <url>https://github.com/deep-bi/deep-druid-extensions/tree/main/druid-encrypting-password-provider</url>
+        <tag>HEAD</tag>
+    </scm>
 
     <dependencies>
         <dependency>

@@ -22,16 +22,26 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.apache.druid.extensions</groupId>
+    <groupId>bi.deep</groupId>
     <artifactId>druid-azure-extensions</artifactId>
-    <name>druid-azure-extensions</name>
-    <description>druid-azure-extensions</description>
+    <name>Deep Druid Azure Extensions</name>
 
     <parent>
         <groupId>deep.bi</groupId>
         <artifactId>deep-druid-extensions</artifactId>
         <version>27.0.0</version>
     </parent>
+
+    <description>
+        Azure extensions for Apache Druid patched with configurable endpoint suffix.
+    </description>
+
+    <scm>
+        <connection>scm:git:git://github.com/deep-bi/deep-druid-extensions.git</connection>
+        <developerConnection>scm:git:git://github.com/deep-bi/deep-druid-extensions.git</developerConnection>
+        <url>https://github.com/deep-bi/deep-druid-extensions/tree/main/druid-azure-extensions</url>
+        <tag>HEAD</tag>
+    </scm>
 
     <dependencies>
         <dependency>
