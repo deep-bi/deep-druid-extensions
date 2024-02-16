@@ -25,12 +25,26 @@
 
     <groupId>bi.deep</groupId>
     <artifactId>exact-distinct-count-aggregator</artifactId>
+    <name>Exact Distinct Count Aggregator</name>
 
     <parent>
         <groupId>deep.bi</groupId>
         <artifactId>deep-druid-extensions</artifactId>
         <version>28.0.0</version>
     </parent>
+
+
+    <description>
+        Druid exact distinct count aggregator extension for Apache Druid provides a more reliable and efficient way to count the number of unique values in a column than existent approximate
+        aggregators.
+    </description>
+
+    <scm>
+        <connection>scm:git:git://github.com/deep-bi/deep-druid-extensions.git</connection>
+        <developerConnection>scm:git:git://github.com/deep-bi/deep-druid-extensions.git</developerConnection>
+        <url>https://github.com/deep-bi/deep-druid-extensions/tree/main/exact-distinct-count-aggregator</url>
+        <tag>HEAD</tag>
+    </scm>
 
     <dependencies>
         <dependency>

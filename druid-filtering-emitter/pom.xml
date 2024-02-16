@@ -24,6 +24,7 @@
 
     <groupId>bi.deep</groupId>
     <artifactId>druid-filtering-emitter</artifactId>
+    <name>Druid Filtering Emitter</name>
 
     <parent>
         <groupId>deep.bi</groupId>
@@ -31,9 +32,14 @@
         <version>28.0.0</version>
     </parent>
 
+    <description>
+        Filtering Emitter extension for Apache Druid allowing to filter the metrics emitted by other emitters.
+    </description>
+
     <scm>
-        <connection>https://github.com/deep-bi/druid-filtering-emitter</connection>
-        <developerConnection>git@github.com:deep-bi/druid-filtering-emitter.git</developerConnection>
+        <connection>scm:git:git://github.com/deep-bi/deep-druid-extensions.git</connection>
+        <developerConnection>scm:git:git://github.com/deep-bi/deep-druid-extensions.git</developerConnection>
+        <url>https://github.com/deep-bi/deep-druid-extensions/tree/main/druid-filtering-emitter</url>
         <tag>HEAD</tag>
     </scm>
 

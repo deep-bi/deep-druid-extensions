@@ -1,6 +1,6 @@
 ## Druid Filtering Emitter
 
-Extension for [Apache Druid](https://druid.apache.org/) allowing to filter the metrics emmited by other emitters.
+Extension for [Apache Druid](https://druid.apache.org/) allowing to filter the metrics emitted by other emitters.
 
 ### Build
 
