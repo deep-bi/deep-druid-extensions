@@ -60,23 +60,6 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Create Azure extensions artifact
-        id: create-azure-extensions-artifact
-        run: |
-          mvn -f druid-azure-extensions/pom.xml clean package -DskipTests
-          mv druid-azure-extensions/target/*.tar.gz ./druid-azure-extensions.tar.gz
-
-      - name: Upload Azure extensions release asset
-        id: upload-azure-ext-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./druid-azure-extensions.tar.gz
-          asset_name: druid-azure-extensions.tar.gz
-          asset_content_type: application/gzip
-
       - name: Create encrypting password provider artifact
         id: create-druid-encrypting-password-provider-artifact
         run: |
