@@ -67,12 +67,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jmh.version>1.9.2</jmh.version>
         <project.parent.basedir>.</project.parent.basedir>
+        <license.file.path>${project.parent.basedir}/codestyle/LICENSE.txt</license.file.path>
     </properties>
 
     <modules>
         <module>exact-distinct-count-aggregator</module>
         <module>druid-encrypting-password-provider</module>
         <module>druid-filtering-emitter</module>
+        <module>druid-filtering-ext</module>
     </modules>
 
     <dependencies>
@@ -105,8 +107,8 @@
                         <!-- make sure every file has the following copyright header.
                           optionally, Spotless can set copyright years by digging
                           through git history (see "license" section below) -->
-                        <licenseHeader>
-                            <file>${project.parent.basedir}/codestyle/LICENSE.txt</file>
+                       <licenseHeader>
+                            <file>${license.file.path}</file>
                         </licenseHeader>
                     </java>
                 </configuration>
