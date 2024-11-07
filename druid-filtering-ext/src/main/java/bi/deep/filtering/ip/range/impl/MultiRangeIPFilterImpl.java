@@ -78,6 +78,7 @@ public class MultiRangeIPFilterImpl implements Filter {
             return ignoreVersionMismatch;
         }
 
+        // Check if we have same version ranges defined
         if (ipAddress.isIPv4() && !ipV4Ranges.isEmpty()) {
             return ipV4Ranges.stream().anyMatch(range -> range.contain(ipAddress));
         } else if (ipAddress.isIPv6() && !ipV6Ranges.isEmpty()) {

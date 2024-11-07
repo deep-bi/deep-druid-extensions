@@ -69,12 +69,7 @@ public class FixedSetIPFilterImpl implements Filter {
     @VisibleForTesting
     public boolean contain(@NotNull final String addressStr) {
         final IPAddress ipAddress = new IPAddressString(addressStr).getAddress();
-
-        if (ipAddress == null) {
-            return ignoreInvalidAddress;
-        }
-
-        return addressSet.contains(ipAddress);
+        return ipAddress == null ? ignoreInvalidAddress : addressSet.contains(ipAddress);
     }
 
     @Override

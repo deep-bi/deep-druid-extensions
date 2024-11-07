@@ -107,9 +107,9 @@ public class IPBoundedRange {
     }
 
     @VisibleForTesting
-    public boolean contain(IPAddress ipAddress, boolean skipMismatchedTypes) {
+    public boolean contain(IPAddress ipAddress, boolean ignoreVersionMismatch) {
         return ipAddress == null || ipAddress.getIPVersion() != this.ipVersion
-                ? skipMismatchedTypes
+                ? ignoreVersionMismatch
                 : matchLowerBound(ipAddress) && matchUpperBound(ipAddress);
     }
 

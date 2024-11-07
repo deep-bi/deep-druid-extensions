@@ -45,7 +45,7 @@ import org.apache.druid.query.filter.Filter;
 
 @JsonTypeName("ip_fixed_range")
 public class FixedSetIPFilter extends AbstractOptimizableDimFilter implements DimFilter {
-    private static final byte CACHE_ID = 0x50;
+    private static final byte CACHE_ID = 0x52;
 
     private final String dimension;
     private final Set<String> ranges;
@@ -69,10 +69,10 @@ public class FixedSetIPFilter extends AbstractOptimizableDimFilter implements Di
     @Override
     public Filter toFilter() {
         final SortedSet<IPAddress> addresses = ranges.stream()
-                                                     .map(this::map)
-                                                     .filter(Objects::nonNull)
-                                                     .sorted()
-                                                     .collect(Collectors.toCollection(TreeSet::new));
+                .map(this::map)
+                .filter(Objects::nonNull)
+                .sorted()
+                .collect(Collectors.toCollection(TreeSet::new));
         return new FixedSetIPFilterImpl(dimension, addresses, ignoreInvalidAddress);
     }
 

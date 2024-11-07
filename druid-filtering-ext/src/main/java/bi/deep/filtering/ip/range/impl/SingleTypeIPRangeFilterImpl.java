@@ -37,7 +37,7 @@ import org.apache.druid.segment.index.BitmapColumnIndex;
 
 public class SingleTypeIPRangeFilterImpl implements Filter {
     private final String column;
-    private final IPBoundedRange range;
+    private final IPBoundedRange boundedRange;
     private final boolean ignoreVersionMismatch;
 
     public SingleTypeIPRangeFilterImpl(String column, IPBoundedRange range, @Nullable Boolean ignoreVersionMismatch) {
@@ -47,7 +47,7 @@ public class SingleTypeIPRangeFilterImpl implements Filter {
 
         this.column = column;
         this.ignoreVersionMismatch = ignoreVersionMismatch == null || ignoreVersionMismatch;
-        this.range = range;
+        this.boundedRange = range;
     }
 
     @Nullable
@@ -64,7 +64,8 @@ public class SingleTypeIPRangeFilterImpl implements Filter {
     @VisibleForTesting
     public boolean contain(@NotNull final String addressStr) {
         final IPAddress ipAddress = new IPAddressString(addressStr).getAddress();
-        return range.contain(ipAddress, ignoreVersionMismatch);
+
+        return ipAddress != null ? boundedRange.contain(ipAddress, ignoreVersionMismatch) : ignoreVersionMismatch;
     }
 
     @Override
@@ -85,11 +86,11 @@ public class SingleTypeIPRangeFilterImpl implements Filter {
 
         return ignoreVersionMismatch == that.ignoreVersionMismatch
                 && Objects.equals(column, that.column)
-                && Objects.equals(range, that.range);
+                && Objects.equals(boundedRange, that.boundedRange);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(column, range, ignoreVersionMismatch);
+        return Objects.hash(column, boundedRange, ignoreVersionMismatch);
     }
 }
