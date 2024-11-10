@@ -110,3 +110,20 @@ jobs:
           asset_path: ./exact-distinct-count-aggregator.tar.gz
           asset_name: exact-distinct-count-aggregator.tar.gz
           asset_content_type: application/gzip
+
+      - name: Create IP Range Filter extensions artifact
+        id: create-druid-ip-range-filter-artifact
+        run: |
+          mvn -f druid-ip-range-filter/pom.xml clean package -DskipTests
+          mv druid-ip-range-filter/target/*.tar.gz ./druid-ip-range-filter.tar.gz
+
+      - name: Upload IP Range Filter extensions release asset
+        id: upload-druid-ip-range-filter-extension-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./druid-ip-range-filter.tar.gz
+          asset_name: druid-ip-range-filter.tar.gz
+          asset_content_type: application/gzip

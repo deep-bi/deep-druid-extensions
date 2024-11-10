@@ -26,6 +26,8 @@
     <groupId>deep.bi</groupId>
     <artifactId>deep-druid-extensions</artifactId>
     <version>31.0.0-SNAPSHOT</version>
+    <name>Deep Druid Extension</name>
+    <description>Collection of Druid extensions</description>
 
     <packaging>pom</packaging>
 
@@ -67,12 +69,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jmh.version>1.9.2</jmh.version>
         <project.parent.basedir>.</project.parent.basedir>
+        <license.file.path>${project.parent.basedir}/codestyle/LICENSE.txt</license.file.path>
     </properties>
 
     <modules>
         <module>exact-distinct-count-aggregator</module>
         <module>druid-encrypting-password-provider</module>
         <module>druid-filtering-emitter</module>
+        <module>druid-ip-range-filter</module>
     </modules>
 
     <dependencies>
@@ -84,10 +88,32 @@
         </dependency>
 
         <!--Tests-->
+        <!-- JUnit 4 is required as a test dependency for Druid -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.11.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>5.11.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.11.3</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -105,8 +131,8 @@
                         <!-- make sure every file has the following copyright header.
                           optionally, Spotless can set copyright years by digging
                           through git history (see "license" section below) -->
-                        <licenseHeader>
-                            <file>${project.parent.basedir}/codestyle/LICENSE.txt</file>
+                       <licenseHeader>
+                            <file>${license.file.path}</file>
                         </licenseHeader>
                     </java>
                 </configuration>
