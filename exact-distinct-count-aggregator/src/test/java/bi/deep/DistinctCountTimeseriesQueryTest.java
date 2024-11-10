@@ -18,13 +18,10 @@
  */
 package bi.deep;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+
 import org.apache.druid.data.input.MapBasedInputRow;
 import org.apache.druid.java.util.common.DateTimes;
 import org.apache.druid.java.util.common.granularity.Granularities;
@@ -40,11 +37,16 @@ import org.apache.druid.segment.TestHelper;
 import org.apache.druid.segment.incremental.*;
 import org.apache.druid.testing.InitializedNullHandlingTest;
 import org.joda.time.DateTime;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class DistinctCountTimeseriesQueryTest extends InitializedNullHandlingTest {
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+
+class DistinctCountTimeseriesQueryTest extends InitializedNullHandlingTest {
     private static final String VISITOR_ID = "visitor_id";
     private static final String CLIENT_TYPE = "client_type";
     private static final DateTime DATE_TIME = DateTimes.of("2016-03-04T00:00:00.000Z");
@@ -52,8 +54,8 @@ public class DistinctCountTimeseriesQueryTest extends InitializedNullHandlingTes
     private TimeseriesQueryEngine engine;
     private IncrementalIndex index;
 
-    @Before
-    public void setup() throws IndexSizeExceededException {
+    @BeforeEach
+    void setup() throws IndexSizeExceededException {
         engine = new TimeseriesQueryEngine();
         index = new OnheapIncrementalIndex.Builder()
                 .setIndexSchema(new IncrementalIndexSchema.Builder()
@@ -78,7 +80,7 @@ public class DistinctCountTimeseriesQueryTest extends InitializedNullHandlingTes
     }
 
     @Test
-    public void testFailQuery() {
+    void testFailQuery() {
         TimeseriesQuery queryToFail = Druids.newTimeseriesQueryBuilder()
                 .dataSource(QueryRunnerTestHelper.DATA_SOURCE)
                 .granularity(QueryRunnerTestHelper.ALL_GRAN)
@@ -88,13 +90,13 @@ public class DistinctCountTimeseriesQueryTest extends InitializedNullHandlingTes
                         new ExactDistinctCountAggregatorFactory("UV", ImmutableList.of(VISITOR_ID), 2, true)))
                 .build();
 
-        Assert.assertThrows(RuntimeException.class, () -> engine.process(
+        Assertions.assertThrows(RuntimeException.class, () -> engine.process(
                         queryToFail, new IncrementalIndexStorageAdapter(index), new DefaultTimeseriesQueryMetrics())
                 .toList());
     }
 
     @Test
-    public void testPartialQuery() {
+    void testPartialQuery() {
         TimeseriesQuery partialQuery = Druids.newTimeseriesQueryBuilder()
                 .dataSource(QueryRunnerTestHelper.DATA_SOURCE)
                 .granularity(QueryRunnerTestHelper.ALL_GRAN)
@@ -116,7 +118,7 @@ public class DistinctCountTimeseriesQueryTest extends InitializedNullHandlingTes
     }
 
     @Test
-    public void testFullQuery() {
+    void testFullQuery() {
         TimeseriesQuery fullQuery = Druids.newTimeseriesQueryBuilder()
                 .dataSource(QueryRunnerTestHelper.DATA_SOURCE)
                 .granularity(QueryRunnerTestHelper.ALL_GRAN)
@@ -141,7 +143,7 @@ public class DistinctCountTimeseriesQueryTest extends InitializedNullHandlingTes
     }
 
     @Test
-    public void testMultiDimensionQuery() {
+    void testMultiDimensionQuery() {
         TimeseriesQuery multiDimensionQuery = Druids.newTimeseriesQueryBuilder()
                 .dataSource(QueryRunnerTestHelper.DATA_SOURCE)
                 .granularity(QueryRunnerTestHelper.ALL_GRAN)
@@ -170,7 +172,7 @@ public class DistinctCountTimeseriesQueryTest extends InitializedNullHandlingTes
     }
 
     @Test
-    public void testMultiDimensionWithDuplicateRows() throws IndexSizeExceededException {
+    void testMultiDimensionWithDuplicateRows() throws IndexSizeExceededException {
         index.add(new MapBasedInputRow(
                 DATE_TIME.getMillis(),
                 Lists.newArrayList(VISITOR_ID, CLIENT_TYPE),

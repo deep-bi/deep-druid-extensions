@@ -26,6 +26,8 @@
     <groupId>deep.bi</groupId>
     <artifactId>deep-druid-extensions</artifactId>
     <version>31.0.0-SNAPSHOT</version>
+    <name>Deep Druid Extension</name>
+    <description>Collection of Druid extensions</description>
 
     <packaging>pom</packaging>
 
@@ -74,7 +76,7 @@
         <module>exact-distinct-count-aggregator</module>
         <module>druid-encrypting-password-provider</module>
         <module>druid-filtering-emitter</module>
-        <module>druid-filtering-ext</module>
+        <module>druid-ip-range-filter</module>
     </modules>
 
     <dependencies>
@@ -86,10 +88,32 @@
         </dependency>
 
         <!--Tests-->
+        <!-- JUnit 4 is required as a test dependency for Druid -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.11.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>5.11.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.11.3</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
