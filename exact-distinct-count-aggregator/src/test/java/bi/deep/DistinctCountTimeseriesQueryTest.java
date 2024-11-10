@@ -18,10 +18,13 @@
  */
 package bi.deep;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-
 import org.apache.druid.data.input.MapBasedInputRow;
 import org.apache.druid.java.util.common.DateTimes;
 import org.apache.druid.java.util.common.granularity.Granularities;
@@ -40,11 +43,6 @@ import org.joda.time.DateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 
 class DistinctCountTimeseriesQueryTest extends InitializedNullHandlingTest {
     private static final String VISITOR_ID = "visitor_id";

@@ -21,17 +21,15 @@ package bi.deep;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import bi.deep.filtering.EventFilter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.apache.druid.java.util.emitter.core.Event;
 import org.apache.druid.java.util.emitter.service.ServiceMetricEvent;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import bi.deep.filtering.EventFilter;
 
 class EventFilterTest {
 
@@ -174,8 +172,7 @@ class EventFilterTest {
 
         assertFalse(filter.test(e1)); // because 'e1' on exclude list
         assertFalse(filter.test(e2)); // because 'e2' on exclude list
-        assertTrue(
-                filter.test(e3)); // because 'e3' not on exclude list and allow list is empty (everything passes)
+        assertTrue(filter.test(e3)); // because 'e3' not on exclude list and allow list is empty (everything passes)
     }
 
     @Test
