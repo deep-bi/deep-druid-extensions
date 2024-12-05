@@ -30,7 +30,7 @@
     <parent>
         <groupId>deep.bi</groupId>
         <artifactId>deep-druid-extensions</artifactId>
-        <version>31.0.0-SNAPSHOT</version>
+        <version>31.0.0</version>
     </parent>
 
 
@@ -68,6 +68,8 @@
         </dependency>
     </dependencies>
     <build>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -81,7 +83,6 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
-                            <finalName>${project.artifactId}-${project.version}</finalName>
                             <tarLongFileMode>posix</tarLongFileMode>
                             <descriptors>
                                 <descriptor>src/assembly/assembly.xml</descriptor>
