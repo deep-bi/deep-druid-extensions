@@ -63,7 +63,7 @@
     </developers>
 
     <properties>
-        <druid.version>${project.version}</druid.version>
+        <druid.version>31.0.0</druid.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jmh.version>1.9.2</jmh.version>
         <project.parent.basedir>.</project.parent.basedir>
