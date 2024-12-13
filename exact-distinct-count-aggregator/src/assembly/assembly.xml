@@ -23,7 +23,7 @@
         <format>tar.gz</format>
     </formats>
 
-    <baseDirectory>${project.name}</baseDirectory>
+    <baseDirectory>${project.artifactId}</baseDirectory>
 
     <dependencySets>
         <dependencySet>

@@ -8,9 +8,9 @@ To build the extension, run `mvn package` and you'll get a file in `target` dire
 Unpack the `tar.gz`.
 
 ```
-$ tar xzf target/druid-filtering-emitter-25.0.0-bin.tar.gz
+$ tar xzf target/druid-filtering-emitter-31.0.0-bin.tar.gz
 $ ls druid-filtering-emitter/
-LICENSE                  README.md                druid-filtering-emitter-25.0.0.jar
+LICENSE                  README.md                druid-filtering-emitter-31.0.0.jar
 ```
 
 ### Install
@@ -37,12 +37,12 @@ druid.emitter.filtering.emitter = <inner-emiter>
 Replace `<inner-emiter>` with one of the emitter provided by the Druid. For example: `logging` (you would also need to
 configure chosen inner emitter). The filtering logic is setup with these properties:
 
-| Property                             | Description                                                                                                      |
-|--------------------------------------|------------------------------------------------------------------------------------------------------------------|
-| `druid.emitter.filtering.key`        | A key to be extracted from the emitted event. Optional. Default value is `"metric"`                              |
-| `druid.emitter.filtering.allowList`  | A list of strings. Names on this list passes to the inner emitter.                                               |
-| `druid.emitter.filtering.blockList`  | A list of strings. Names on this list are ignored.                                                               |
-| `druid.emitter.filtering.startsWith` | A list of strings. Event passes to the inner emitter when the value starts with one of the strings from this list.|
+| Property                             | Description                                                                                                           |
+|--------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| `druid.emitter.filtering.key`        | A key to be extracted from the emitted event. Optional. Default value is `"metric"`                                   |
+| `druid.emitter.filtering.allowList`  | A list of strings. Names on this list passes to the inner emitter.                                                    |
+| `druid.emitter.filtering.blockList`  | A list of strings. Names on this list are ignored.                                                                    |
+| `druid.emitter.filtering.startsWith` | A list of strings. Event passes to the inner emitter when the value starts with one of the strings from this list.    |
 | `druid.emitter.filtering.regexMatch` | A list of strings. Event passes to the inner emitter when the value matches one of the regex patterns from this list. |
 
 The filters are passed from the top to bottom.

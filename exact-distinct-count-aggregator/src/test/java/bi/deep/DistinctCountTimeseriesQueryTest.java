@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import org.apache.druid.data.input.MapBasedInputRow;
+import org.apache.druid.data.input.impl.TimestampSpec;
 import org.apache.druid.java.util.common.DateTimes;
 import org.apache.druid.java.util.common.granularity.Granularities;
 import org.apache.druid.query.Druids;
@@ -36,8 +37,13 @@ import org.apache.druid.query.timeseries.DefaultTimeseriesQueryMetrics;
 import org.apache.druid.query.timeseries.TimeseriesQuery;
 import org.apache.druid.query.timeseries.TimeseriesQueryEngine;
 import org.apache.druid.query.timeseries.TimeseriesResultValue;
+import org.apache.druid.segment.IncrementalIndexTimeBoundaryInspector;
 import org.apache.druid.segment.TestHelper;
-import org.apache.druid.segment.incremental.*;
+import org.apache.druid.segment.incremental.IncrementalIndex;
+import org.apache.druid.segment.incremental.IncrementalIndexCursorFactory;
+import org.apache.druid.segment.incremental.IncrementalIndexSchema;
+import org.apache.druid.segment.incremental.IndexSizeExceededException;
+import org.apache.druid.segment.incremental.OnheapIncrementalIndex;
 import org.apache.druid.testing.InitializedNullHandlingTest;
 import org.joda.time.DateTime;
 import org.junit.Assert;
@@ -57,6 +63,7 @@ public class DistinctCountTimeseriesQueryTest extends InitializedNullHandlingTes
         engine = new TimeseriesQueryEngine();
         index = new OnheapIncrementalIndex.Builder()
                 .setIndexSchema(new IncrementalIndexSchema.Builder()
+                        .withTimestampSpec(new TimestampSpec("__time", "millis", null))
                         .withQueryGranularity(Granularities.SECOND)
                         .withMetrics(new CountAggregatorFactory("cnt"))
                         .build())
@@ -89,7 +96,10 @@ public class DistinctCountTimeseriesQueryTest extends InitializedNullHandlingTes
                 .build();
 
         Assert.assertThrows(RuntimeException.class, () -> engine.process(
-                        queryToFail, new IncrementalIndexStorageAdapter(index), new DefaultTimeseriesQueryMetrics())
+                        queryToFail,
+                        new IncrementalIndexCursorFactory(index),
+                        new IncrementalIndexTimeBoundaryInspector(index),
+                        new DefaultTimeseriesQueryMetrics())
                 .toList());
     }
 
@@ -105,7 +115,10 @@ public class DistinctCountTimeseriesQueryTest extends InitializedNullHandlingTes
                 .build();
 
         final Iterable<Result<TimeseriesResultValue>> results = engine.process(
-                        partialQuery, new IncrementalIndexStorageAdapter(index), new DefaultTimeseriesQueryMetrics())
+                        partialQuery,
+                        new IncrementalIndexCursorFactory(index),
+                        new IncrementalIndexTimeBoundaryInspector(index),
+                        new DefaultTimeseriesQueryMetrics())
                 .toList();
         Set<Integer> set = ImmutableSet.of(
                 ImmutableList.of("0").hashCode(), ImmutableList.of("1").hashCode());
@@ -127,7 +140,10 @@ public class DistinctCountTimeseriesQueryTest extends InitializedNullHandlingTes
                 .build();
 
         final Iterable<Result<TimeseriesResultValue>> fullResults = engine.process(
-                        fullQuery, new IncrementalIndexStorageAdapter(index), new DefaultTimeseriesQueryMetrics())
+                        fullQuery,
+                        new IncrementalIndexCursorFactory(index),
+                        new IncrementalIndexTimeBoundaryInspector(index),
+                        new DefaultTimeseriesQueryMetrics())
                 .toList();
 
         Set<Integer> set = ImmutableSet.of(
@@ -154,7 +170,8 @@ public class DistinctCountTimeseriesQueryTest extends InitializedNullHandlingTes
 
         final Iterable<Result<TimeseriesResultValue>> multiDimensionResults = engine.process(
                         multiDimensionQuery,
-                        new IncrementalIndexStorageAdapter(index),
+                        new IncrementalIndexCursorFactory(index),
+                        new IncrementalIndexTimeBoundaryInspector(index),
                         new DefaultTimeseriesQueryMetrics())
                 .toList();
 
@@ -195,7 +212,8 @@ public class DistinctCountTimeseriesQueryTest extends InitializedNullHandlingTes
 
         final Iterable<Result<TimeseriesResultValue>> multiDimensionResults = engine.process(
                         multiDimensionQuery,
-                        new IncrementalIndexStorageAdapter(index),
+                        new IncrementalIndexCursorFactory(index),
+                        new IncrementalIndexTimeBoundaryInspector(index),
                         new DefaultTimeseriesQueryMetrics())
                 .toList();
 
