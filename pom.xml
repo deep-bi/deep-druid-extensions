@@ -22,7 +22,7 @@
 
     <groupId>deep.bi</groupId>
     <artifactId>deep-druid-extensions</artifactId>
-    <version>31.0.0</version>
+    <version>31.0.1</version>
 
     <packaging>pom</packaging>
 
@@ -35,18 +35,6 @@
 
     <developers>
         <developer>
-            <id>bartosz-mikulski</id>
-            <name>Bartosz Mikulski</name>
-            <email>bartosz.mikulski@deep.bi</email>
-            <organization>Deep.BI</organization>
-            <organizationUrl>https://www.deep.bi/</organizationUrl>
-            <roles>
-                <role>architect</role>
-                <role>developer</role>
-            </roles>
-            <timezone>+2</timezone>
-        </developer>
-        <developer>
             <id>mikhail-sviatahorau</id>
             <name>Mikhail Sviatahorau</name>
             <email>mikhail.sviatahorau@deep.bi</email>
@@ -57,10 +45,21 @@
             </roles>
             <timezone>+2</timezone>
         </developer>
+        <developer>
+            <id>vivek-dhiman</id>
+            <name>Vivek Dhiman</name>
+            <email>vivek.dhiman@deep.bi</email>
+            <organization>Deep.BI</organization>
+            <organizationUrl>https://www.deep.bi/</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>+5:30</timezone>
+        </developer>
     </developers>
 
     <properties>
-        <druid.version>31.0.0</druid.version>
+        <druid.version>31.0.1</druid.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jmh.version>1.9.2</jmh.version>
         <project.parent.basedir>.</project.parent.basedir>
@@ -70,6 +69,7 @@
         <module>exact-distinct-count-aggregator</module>
         <module>druid-encrypting-password-provider</module>
         <module>druid-filtering-emitter</module>
+        <module>druid-same-or-null-aggregator</module>
     </modules>
 
     <dependencies>

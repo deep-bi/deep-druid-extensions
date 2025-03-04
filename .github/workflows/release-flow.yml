@@ -110,3 +110,20 @@ jobs:
           asset_path: ./exact-distinct-count-aggregator.tar.gz
           asset_name: exact-distinct-count-aggregator.tar.gz
           asset_content_type: application/gzip
+
+      - name: Create same or null aggregator artifact
+        id: create-same-or-null-aggregator-artifact
+        run: |
+          mvn -f druid-same-or-null-aggregator/pom.xml clean package -DskipTests
+          mv druid-same-or-null-aggregator/target/*.tar.gz ./druid-same-or-null-aggregator.tar.gz
+
+      - name: Upload same or null aggregator release asset
+        id: upload-same-or-null-aggregator-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./druid-same-or-null-aggregator.tar.gz
+          asset_name: druid-same-or-null-aggregator.tar.gz
+          asset_content_type: application/gzip
