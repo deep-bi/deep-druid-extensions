@@ -19,5 +19,5 @@ execute the
 following command in the `$DRUID_HOME` directory:
 
 ```bash
-java -classpath "./lib/*" org.apache.druid.cli.Main tools pull-deps -c bi.deep:druid-filtering-emitter:31.0.1
+java -classpath "./lib/*" org.apache.druid.cli.Main tools pull-deps -c bi.deep:druid-filtering-emitter:31.0.2
 ```

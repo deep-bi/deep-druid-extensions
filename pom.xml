@@ -22,7 +22,7 @@
 
     <groupId>deep.bi</groupId>
     <artifactId>deep-druid-extensions</artifactId>
-    <version>31.0.1</version>
+    <version>31.0.2</version>
 
     <packaging>pom</packaging>
 
@@ -59,7 +59,7 @@
     </developers>
 
     <properties>
-        <druid.version>31.0.1</druid.version>
+        <druid.version>31.0.2</druid.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jmh.version>1.9.2</jmh.version>
         <project.parent.basedir>.</project.parent.basedir>
