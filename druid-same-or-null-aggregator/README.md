@@ -87,10 +87,10 @@ To build the extension, run `mvn package` and you'll get a file in `target` dire
 Unpack the `tar.gz`.
 
 ```
-$ tar xzf target/druid-same-or-null-31.0.2-bin.tar.gz
+$ tar xzf target/druid-same-or-null-32.0.1-bin.tar.gz
 $ ls druid-same-or-null/
-LICENSE           druid-same-or-null-31.0.2-javadoc.jar        druid-same-or-null-31.0.2.jar
-README.md         druid-same-or-null-31.0.2-sources.jar
+LICENSE           druid-same-or-null-32.0.1-javadoc.jar        druid-same-or-null-32.0.1.jar
+README.md         druid-same-or-null-32.0.1-sources.jar
 ```
 
 ---
