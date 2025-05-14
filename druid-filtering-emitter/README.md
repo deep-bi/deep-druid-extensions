@@ -8,9 +8,9 @@ To build the extension, run `mvn package` and you'll get a file in `target` dire
 Unpack the `tar.gz`.
 
 ```
-$ tar xzf target/druid-filtering-emitter-31.0.2-bin.tar.gz
+$ tar xzf target/druid-filtering-emitter-32.0.1-bin.tar.gz
 $ ls druid-filtering-emitter/
-LICENSE                  README.md                druid-filtering-emitter-31.0.2.jar
+LICENSE                  README.md                druid-filtering-emitter-32.0.1.jar
 ```
 
 ### Install

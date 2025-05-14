@@ -14,10 +14,10 @@ at [Deep.BI](https://www.deep.bi/).
 Extensions from this package can be automatically downloaded using
 the [pull-deps tool](https://druid.apache.org/docs/latest/operations/pull-deps/).
 
-For example, to download the Deep Druid Filtering Emitter (v28.0.0) and place it into the `/extensions` directory,
+For example, to download the Deep Druid Filtering Emitter (v32.0.1) and place it into the `/extensions` directory,
 execute the
 following command in the `$DRUID_HOME` directory:
 
 ```bash
-java -classpath "./lib/*" org.apache.druid.cli.Main tools pull-deps -c bi.deep:druid-filtering-emitter:31.0.2
+java -classpath "./lib/*" org.apache.druid.cli.Main tools pull-deps -c bi.deep:druid-filtering-emitter:32.0.1
 ```

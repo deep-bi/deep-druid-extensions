@@ -22,7 +22,7 @@
 
     <groupId>deep.bi</groupId>
     <artifactId>deep-druid-extensions</artifactId>
-    <version>31.0.2</version>
+    <version>32.0.1</version>
 
     <packaging>pom</packaging>
 
@@ -59,7 +59,7 @@
     </developers>
 
     <properties>
-        <druid.version>31.0.2</druid.version>
+        <druid.version>32.0.1</druid.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jmh.version>1.9.2</jmh.version>
         <project.parent.basedir>.</project.parent.basedir>
@@ -71,6 +71,13 @@
         <module>druid-filtering-emitter</module>
         <module>druid-same-or-null-aggregator</module>
     </modules>
+
+    <repositories>
+        <repository>
+            <id>twitter</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -140,8 +147,8 @@
                 <version>3.11.0</version>
                 <configuration>
                     <compilerArgument>-Xlint:unchecked</compilerArgument>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -160,7 +167,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9.1</version>
+                <version>3.11.2</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>

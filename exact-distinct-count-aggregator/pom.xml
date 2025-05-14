@@ -27,7 +27,7 @@
     <parent>
         <groupId>deep.bi</groupId>
         <artifactId>deep-druid-extensions</artifactId>
-        <version>31.0.2</version>
+        <version>32.0.1</version>
     </parent>
 
 

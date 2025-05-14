@@ -21,7 +21,6 @@
 
   <groupId>bi.deep</groupId>
   <artifactId>druid-same-or-null-aggregator</artifactId>
-  <version>31.0.2</version>
   <name>Druid Same or Null Aggregator</name>
   <description>Extension for Apache Druid that provides an aggregation function that returns NULL if the values are
     different
@@ -30,7 +29,7 @@
   <parent>
     <groupId>deep.bi</groupId>
     <artifactId>deep-druid-extensions</artifactId>
-    <version>31.0.2</version>
+    <version>32.0.1</version>
   </parent>
 
   <scm>
