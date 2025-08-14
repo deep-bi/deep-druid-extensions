@@ -59,26 +59,3 @@ public class TrinaryBool {
         return "TrinaryBool{" + "value=" + value + ", known=" + known + '}';
     }
 }
-
-// public enum TrinaryBool {
-//    TRUE(true, true),
-//    FALSE(false, true),
-//    MAYBE(false, false);
-//
-//    private final boolean value;
-//    private final boolean shortCircuit;
-//
-//    public boolean getValue() {
-//        return value;
-//    }
-//
-//
-//    public boolean canShortCircuit() {
-//        return shortCircuit;
-//    }
-//
-//    TrinaryBool(boolean value, boolean shortCircuit) {
-//        this.value = value;
-//        this.shortCircuit = shortCircuit;
-//    }
-// }
