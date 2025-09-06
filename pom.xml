@@ -20,10 +20,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>deep.bi</groupId>
+    <groupId>bi.deep</groupId>
     <artifactId>deep-druid-extensions</artifactId>
     <version>33.0.0</version>
     <packaging>pom</packaging>
+
+    <name>Deep Druid Extensions</name>
+    <description>Deep Druid Extensions pack</description>
+    <url>https://github.com/deep-bi/deep-druid-extensions</url>
 
     <licenses>
         <license>
@@ -31,6 +35,13 @@
             <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
+
+    <scm>
+      <connection>scm:git:git://github.com/deep-bi/deep-druid-extensions.git</connection>
+      <developerConnection>scm:git:git://github.com/deep-bi/deep-druid-extensions.git</developerConnection>
+      <url>https://github.com/deep-bi/deep-druid-extensions/tree/main</url>
+      <tag>HEAD</tag>
+    </scm>
 
     <developers>
         <developer>
@@ -196,17 +207,15 @@
                     </gpgArguments>
                 </configuration>
             </plugin>
+            <plugin>
+              <groupId>org.sonatype.central</groupId>
+              <artifactId>central-publishing-maven-plugin</artifactId>
+              <version>0.8.0</version>
+              <extensions>true</extensions>
+              <configuration>
+                <publishingServerId>central</publishingServerId>
+              </configuration>
+            </plugin>
         </plugins>
     </build>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
 </project>

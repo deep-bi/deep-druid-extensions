@@ -24,7 +24,7 @@
     <name>Encrypting Password Provider</name>
 
     <parent>
-        <groupId>deep.bi</groupId>
+        <groupId>bi.deep</groupId>
         <artifactId>deep-druid-extensions</artifactId>
         <version>33.0.0</version>
     </parent>
