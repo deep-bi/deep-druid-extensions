@@ -39,7 +39,6 @@ import org.apache.druid.segment.TestHelper;
 import org.apache.druid.segment.incremental.IncrementalIndex;
 import org.apache.druid.segment.incremental.IncrementalIndexCursorFactory;
 import org.apache.druid.segment.incremental.IncrementalIndexSchema;
-import org.apache.druid.segment.incremental.IndexSizeExceededException;
 import org.apache.druid.segment.incremental.OnheapIncrementalIndex;
 import org.apache.druid.testing.InitializedNullHandlingTest;
 import org.joda.time.DateTime;
@@ -56,7 +55,7 @@ public class DistinctCountTimeseriesQueryTest extends InitializedNullHandlingTes
     private IncrementalIndex index;
 
     @Before
-    public void setup() throws IndexSizeExceededException {
+    public void setup() {
         engine = new TimeseriesQueryEngine();
         index = new OnheapIncrementalIndex.Builder()
                 .setIndexSchema(new IncrementalIndexSchema.Builder()
@@ -184,7 +183,7 @@ public class DistinctCountTimeseriesQueryTest extends InitializedNullHandlingTes
     }
 
     @Test
-    public void testMultiDimensionWithDuplicateRows() throws IndexSizeExceededException {
+    public void testMultiDimensionWithDuplicateRows() {
         index.add(new MapBasedInputRow(
                 DATE_TIME.getMillis(),
                 Lists.newArrayList(VISITOR_ID, CLIENT_TYPE),
