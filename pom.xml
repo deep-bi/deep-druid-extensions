@@ -22,7 +22,7 @@
 
     <groupId>bi.deep</groupId>
     <artifactId>deep-druid-extensions</artifactId>
-    <version>34.0.0</version>
+    <version>35.0.1</version>
     <packaging>pom</packaging>
 
     <name>Deep Druid Extensions</name>
@@ -69,7 +69,7 @@
     </developers>
 
     <properties>
-        <druid.version>34.0.0</druid.version>
+        <druid.version>35.0.1</druid.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jmh.version>1.9.2</jmh.version>
         <project.parent.basedir>.</project.parent.basedir>
@@ -157,8 +157,8 @@
                 <version>3.11.0</version>
                 <configuration>
                     <compilerArgument>-Xlint:unchecked</compilerArgument>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>17</source>
+                    <target>17</target>
                 </configuration>
             </plugin>
             <plugin>
