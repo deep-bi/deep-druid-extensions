@@ -127,3 +127,20 @@ jobs:
           asset_path: ./druid-same-or-null-aggregator.tar.gz
           asset_name: druid-same-or-null-aggregator.tar.gz
           asset_content_type: application/gzip
+
+      - name: Create druid-ingestion-time artifact
+        id: create-druid-ingestion-time-artifact
+        run: |
+          mvn -f druid-ingestion-time/pom.xml clean package -DskipTests
+          mv druid-ingestion-time/target/*.tar.gz ./druid-ingestion-time.tar.gz
+
+      - name: Upload druid-ingestion-time release asset
+        id: upload-druid-ingestion-time-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./druid-ingestion-time.tar.gz
+          asset_name: druid-ingestion-time.tar.gz
+          asset_content_type: application/gzip

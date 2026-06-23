@@ -80,6 +80,7 @@
         <module>druid-encrypting-password-provider</module>
         <module>druid-filtering-emitter</module>
         <module>druid-same-or-null-aggregator</module>
+        <module>druid-ingestion-time</module>
     </modules>
 
     <repositories>
