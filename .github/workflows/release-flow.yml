@@ -60,23 +60,6 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Create encrypting password provider artifact
-        id: create-druid-encrypting-password-provider-artifact
-        run: |
-          mvn -f druid-encrypting-password-provider/pom.xml clean package -DskipTests
-          mv druid-encrypting-password-provider/target/*.tar.gz ./druid-encrypting-password-provider.tar.gz
-
-      - name: Upload encrypting password provider release asset
-        id: upload-encrypting-password-provider-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./druid-encrypting-password-provider.tar.gz
-          asset_name: druid-encrypting-password-provider.tar.gz
-          asset_content_type: application/gzip
-
       - name: Create filtering emitter artifact
         id: create-druid-filtering-emitter-artifact
         run: |

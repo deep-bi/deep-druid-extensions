@@ -5,7 +5,6 @@ at [Deep.BI](https://www.deep.bi/).
 
 | Extension name                     | Description                                                                                                                        | Docs                                                                           |
 |------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
-| druid-encrypting-password-provider | Password provider extension that encrypts runtime configuration passwords using AES algorithm with a hardcoded encryption key.     | [README.md](druid-encrypting-password-provider/README.md)                      |
 | druid-filtering-emitter            | Extension allowing to filter the metrics emitted by other emitters.                                                                | [README.md](druid-filtering-emitter/README.md)                                 |
 | exact-distinct-count-aggregator    | Provides a more reliable and efficient way to count the number of unique values in a column than existent approximate aggregators. | [README.md](exact-distinct-count-aggregator/README.md)                         |
 | druid-same-or-null-aggregator      | Provides an aggregation function that returns NULL if the values are different                                                     | [README.md](druid-same-or-null-aggregator/README.md)                           |
