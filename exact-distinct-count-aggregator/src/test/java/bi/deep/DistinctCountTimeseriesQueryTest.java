@@ -91,12 +91,14 @@ public class DistinctCountTimeseriesQueryTest extends InitializedNullHandlingTes
                         new ExactDistinctCountAggregatorFactory("UV", ImmutableList.of(VISITOR_ID), 2, true)))
                 .build();
 
-        Assert.assertThrows(RuntimeException.class, () -> engine.process(
-                        queryToFail,
-                        new IncrementalIndexCursorFactory(index),
-                        new IncrementalIndexTimeBoundaryInspector(index),
-                        new DefaultTimeseriesQueryMetrics())
-                .toList());
+        Assert.assertThrows(
+                RuntimeException.class,
+                () -> engine.process(
+                                queryToFail,
+                                new IncrementalIndexCursorFactory(index),
+                                new IncrementalIndexTimeBoundaryInspector(index),
+                                new DefaultTimeseriesQueryMetrics())
+                        .toList());
     }
 
     @Test
