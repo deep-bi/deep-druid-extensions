@@ -121,7 +121,7 @@
                           optionally, Spotless can set copyright years by digging
                           through git history (see "license" section below) -->
                         <licenseHeader>
-                            <file>${maven.multiModuleProjectDirectory}/codestyle/LICENSE.txt</file>
+                            <file>${project.parent.basedir}/codestyle/LICENSE.txt</file>
                         </licenseHeader>
                     </java>
                 </configuration>
