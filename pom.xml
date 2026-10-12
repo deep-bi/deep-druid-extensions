@@ -80,6 +80,7 @@
         <module>druid-filtering-emitter</module>
         <module>druid-same-or-null-aggregator</module>
         <module>druid-ingestion-time</module>
+        <module>druid-ip-range-filter</module>
     </modules>
 
     <repositories>

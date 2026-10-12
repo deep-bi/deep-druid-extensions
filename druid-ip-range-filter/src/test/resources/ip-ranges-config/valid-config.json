@@ -1,0 +1,6 @@
+{
+  "type": "ip_ranges",
+  "dimension": "ip-column",
+  "ranges": ["0.0.0.0/255.255.255.255", "6f:ad2f:938:5f8f:7f94:ddd0:e1a5:4f/58db:b320:7914:41f9:12ca:5ccc:9c05:cd1e"],
+  "ignoreVersionMismatch": false
+}
