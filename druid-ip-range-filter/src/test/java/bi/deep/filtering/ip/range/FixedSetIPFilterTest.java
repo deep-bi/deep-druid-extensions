@@ -15,13 +15,17 @@
  */
 package bi.deep.filtering.ip.range;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import bi.deep.filtering.ip.range.impl.FixedSetIPFilterImpl;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Streams;
 import inet.ipaddr.IPAddress;
 import inet.ipaddr.IPAddressString;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -128,5 +132,40 @@ class FixedSetIPFilterTest {
         assertTrue(LongStream.range(0, count).mapToObj(ipV6Address::increment).allMatch(filterImp::contains));
         assertFalse(LongStream.range(0, count).mapToObj(ipV4Address::increment).allMatch(filterImp::contains));
         assertFalse(filterImp.contains(ipV6Address.increment(count + 1)));
+    }
+
+    @Test
+    void testCacheKeyDiffersForDifferentRangesOfSameSize() {
+        final FixedSetIPFilter a = new FixedSetIPFilter("dimension", ImmutableSet.of("10.0.0.1", "192.168.0.1"));
+        final FixedSetIPFilter b = new FixedSetIPFilter("dimension", ImmutableSet.of("10.0.0.2", "192.168.0.2"));
+
+        assertFalse(Arrays.equals(a.getCacheKey(), b.getCacheKey()));
+    }
+
+    @Test
+    void testCacheKeyIgnoresRangeOrder() {
+        final FixedSetIPFilter a =
+                new FixedSetIPFilter("dimension", new LinkedHashSet<>(Arrays.asList("10.0.0.1", "192.168.0.1", "::1")));
+        final FixedSetIPFilter b =
+                new FixedSetIPFilter("dimension", new LinkedHashSet<>(Arrays.asList("::1", "192.168.0.1", "10.0.0.1")));
+
+        assertArrayEquals(a.getCacheKey(), b.getCacheKey());
+    }
+
+    @Test
+    void testCacheKeyDoesNotCollideOnRangeBoundaries() {
+        // a naive join of the strings would make these two sets indistinguishable
+        final FixedSetIPFilter a = new FixedSetIPFilter("dimension", ImmutableSet.of("10.0.0.1, 10.0.0.2"));
+        final FixedSetIPFilter b = new FixedSetIPFilter("dimension", ImmutableSet.of("10.0.0.1", "10.0.0.2"));
+
+        assertFalse(Arrays.equals(a.getCacheKey(), b.getCacheKey()));
+    }
+
+    @Test
+    void testCacheKeyDiffersByDimension() {
+        final FixedSetIPFilter a = new FixedSetIPFilter("dimension", ImmutableSet.of("10.0.0.1"));
+        final FixedSetIPFilter b = new FixedSetIPFilter("other", ImmutableSet.of("10.0.0.1"));
+
+        assertFalse(Arrays.equals(a.getCacheKey(), b.getCacheKey()));
     }
 }

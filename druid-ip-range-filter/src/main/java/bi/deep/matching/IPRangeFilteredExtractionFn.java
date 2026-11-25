@@ -15,11 +15,18 @@
  */
 package bi.deep.matching;
 
+import bi.deep.util.CacheKeyUtil;
 import bi.deep.util.IPRangeUtil;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import inet.ipaddr.IPAddress;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
+import org.apache.druid.query.cache.CacheKeyBuilder;
 import org.apache.druid.query.extraction.DimExtractionFn;
 
 @JsonTypeName("ip-range-extraction-fn")
@@ -28,9 +35,26 @@ public class IPRangeFilteredExtractionFn extends DimExtractionFn {
     public static final byte CACHE_TYPE_ID_IP_RANGE_FN = 0xF;
 
     private final List<IPAddress> ips;
+    private final Supplier<byte[]> ipsDigest;
 
-    public IPRangeFilteredExtractionFn(List<IPAddress> ips) {
-        this.ips = ips;
+    public IPRangeFilteredExtractionFn(@Nullable List<IPAddress> ips) {
+        // null means "no match" in apply(); the snapshot keeps the memoised digest in step with matching
+        this.ips = ips == null ? Collections.emptyList() : Collections.unmodifiableList(new ArrayList<>(ips));
+        this.ipsDigest = Suppliers.memoize(() -> digest(this.ips));
+    }
+
+    List<IPAddress> getIps() {
+        return ips;
+    }
+
+    byte[] getIpsDigest() {
+        return ipsDigest.get();
+    }
+
+    // order-preserving because apply() lists matches in the order of ips
+    private static byte[] digest(List<IPAddress> ips) {
+        return CacheKeyUtil.hashStrings(
+                ips.stream().map(ip -> ip == null ? null : ip.toString()).collect(Collectors.toList()));
     }
 
     @Nullable
@@ -51,6 +75,8 @@ public class IPRangeFilteredExtractionFn extends DimExtractionFn {
 
     @Override
     public byte[] getCacheKey() {
-        return new byte[] {CACHE_TYPE_ID_IP_RANGE_FN};
+        return new CacheKeyBuilder(CACHE_TYPE_ID_IP_RANGE_FN)
+                .appendByteArray(ipsDigest.get())
+                .build();
     }
 }

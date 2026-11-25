@@ -15,6 +15,7 @@
  */
 package bi.deep.filtering.ip.range;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -24,6 +25,7 @@ import com.google.common.collect.ImmutableSet;
 import inet.ipaddr.IPAddress;
 import inet.ipaddr.IPAddressString;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.stream.LongStream;
 import org.apache.druid.query.filter.Filter;
 import org.junit.jupiter.api.Assertions;
@@ -128,5 +130,53 @@ class MultiRangeIPFilterTest {
             IPAddress ip = new IPAddressString(s).getAddress();
             assertEquals(a.contains(ip), b.contains(ip), "Mismatch on " + s);
         }
+    }
+
+    @Test
+    void testCacheKeyDiffersForDifferentRangesOfSameSize() {
+        final MultiRangeIPFilter a =
+                new MultiRangeIPFilter("dimension", ImmutableSet.of("10.0.0.0/24", "192.168.0.0/16"), false);
+        final MultiRangeIPFilter b =
+                new MultiRangeIPFilter("dimension", ImmutableSet.of("172.16.0.0/12", "8.8.8.0/24"), false);
+
+        assertFalse(Arrays.equals(a.getCacheKey(), b.getCacheKey()));
+    }
+
+    @Test
+    void testCacheKeyDiffersForSingleDifferentRange() {
+        final MultiRangeIPFilter a = new MultiRangeIPFilter("dimension", ImmutableSet.of("10.0.0.0/24"), false);
+        final MultiRangeIPFilter b = new MultiRangeIPFilter("dimension", ImmutableSet.of("10.0.1.0/24"), false);
+
+        assertFalse(Arrays.equals(a.getCacheKey(), b.getCacheKey()));
+    }
+
+    @Test
+    void testCacheKeyIgnoresRangeOrder() {
+        final MultiRangeIPFilter a = new MultiRangeIPFilter(
+                "dimension", new LinkedHashSet<>(Arrays.asList("10.0.0.0/24", "192.168.0.0/16", "::1/128")), false);
+        final MultiRangeIPFilter b = new MultiRangeIPFilter(
+                "dimension", new LinkedHashSet<>(Arrays.asList("::1/128", "192.168.0.0/16", "10.0.0.0/24")), false);
+
+        assertArrayEquals(a.getCacheKey(), b.getCacheKey());
+    }
+
+    @Test
+    void testCacheKeyDoesNotCollideOnRangeBoundaries() {
+        // a naive join of the strings would make these two sets indistinguishable
+        final MultiRangeIPFilter a = new MultiRangeIPFilter("dimension", ImmutableSet.of("10.0.0.1, 10.0.0.2"), false);
+        final MultiRangeIPFilter b =
+                new MultiRangeIPFilter("dimension", ImmutableSet.of("10.0.0.1", "10.0.0.2"), false);
+
+        assertFalse(Arrays.equals(a.getCacheKey(), b.getCacheKey()));
+    }
+
+    @Test
+    void testCacheKeyDiffersByDimensionAndVersionFlag() {
+        final MultiRangeIPFilter base = new MultiRangeIPFilter("dimension", ImmutableSet.of("10.0.0.0/24"), false);
+        final MultiRangeIPFilter otherDim = new MultiRangeIPFilter("other", ImmutableSet.of("10.0.0.0/24"), false);
+        final MultiRangeIPFilter otherFlag = new MultiRangeIPFilter("dimension", ImmutableSet.of("10.0.0.0/24"), true);
+
+        assertFalse(Arrays.equals(base.getCacheKey(), otherDim.getCacheKey()));
+        assertFalse(Arrays.equals(base.getCacheKey(), otherFlag.getCacheKey()));
     }
 }

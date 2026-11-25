@@ -16,13 +16,18 @@
 package bi.deep.filtering.ip.range;
 
 import bi.deep.filtering.ip.range.impl.RangeMatchingIPFilterImpl;
+import bi.deep.util.CacheKeyUtil;
 import bi.deep.util.IPRangeUtil;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.RangeSet;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nullable;
@@ -37,6 +42,8 @@ public class RangeMatchingIPFilter extends AbstractOptimizableDimFilter implemen
     private static final byte CACHE_ID = 0x53;
     private final String dimension;
     private final Set<String> ips;
+    // sorting and hashing a large set is costly and getCacheKey can run many times per query
+    private final Supplier<byte[]> ipsDigest;
     private final boolean ignoreVersionMismatch;
 
     @JsonCreator
@@ -48,7 +55,9 @@ public class RangeMatchingIPFilter extends AbstractOptimizableDimFilter implemen
         if (ips == null || ips.isEmpty()) {
             throw new IllegalArgumentException("values are not defined");
         }
-        this.ips = ips;
+        // snapshot so the memoised digest cannot drift from the values used for matching
+        this.ips = Collections.unmodifiableSet(new LinkedHashSet<>(ips));
+        this.ipsDigest = Suppliers.memoize(() -> CacheKeyUtil.hashStringsIgnoringOrder(this.ips));
         this.ignoreVersionMismatch = ignoreVersionMismatch != null && ignoreVersionMismatch;
     }
 
@@ -109,7 +118,7 @@ public class RangeMatchingIPFilter extends AbstractOptimizableDimFilter implemen
         return new CacheKeyBuilder(CACHE_ID)
                 .appendString(dimension)
                 .appendByte(DimFilterUtils.STRING_SEPARATOR)
-                .appendString(ips.toString())
+                .appendByteArray(ipsDigest.get())
                 .appendByte(DimFilterUtils.STRING_SEPARATOR)
                 .appendBoolean(ignoreVersionMismatch)
                 .build();
