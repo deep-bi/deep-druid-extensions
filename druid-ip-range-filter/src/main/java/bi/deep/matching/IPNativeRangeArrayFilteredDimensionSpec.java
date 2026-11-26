@@ -16,11 +16,17 @@
 package bi.deep.matching;
 
 import bi.deep.guice.IPRangeDimensionModule;
+import bi.deep.util.CacheKeyUtil;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Set;
+import org.apache.druid.query.cache.CacheKeyBuilder;
 import org.apache.druid.query.dimension.DimensionSpec;
 import org.apache.druid.query.extraction.ExtractionFn;
 import org.apache.druid.segment.DimensionSelector;
@@ -32,6 +38,8 @@ public class IPNativeRangeArrayFilteredDimensionSpec implements DimensionSpec {
     private final String name;
     private final DimensionSpec delegate;
     private final Set<String> ips;
+    // sorting and hashing a large set is costly and getCacheKey can run many times per query
+    private final Supplier<byte[]> ipsDigest;
 
     @JsonCreator
     public IPNativeRangeArrayFilteredDimensionSpec(
@@ -43,7 +51,9 @@ public class IPNativeRangeArrayFilteredDimensionSpec implements DimensionSpec {
         }
         this.name = Preconditions.checkNotNull(name, "name must be defined");
         this.delegate = Preconditions.checkNotNull(delegate, "delegate");
-        this.ips = ips;
+        // snapshot so the memoised digest cannot drift from the values used for matching
+        this.ips = Collections.unmodifiableSet(new LinkedHashSet<>(ips));
+        this.ipsDigest = Suppliers.memoize(() -> CacheKeyUtil.hashStringsIgnoringOrder(this.ips));
     }
 
     @JsonProperty("delegate")
@@ -99,6 +109,10 @@ public class IPNativeRangeArrayFilteredDimensionSpec implements DimensionSpec {
 
     @Override
     public byte[] getCacheKey() {
-        return new byte[] {CACHE_TYPE_ID_IP_RANGE_DIM};
+        return new CacheKeyBuilder(CACHE_TYPE_ID_IP_RANGE_DIM)
+                .appendString(name)
+                .appendCacheable(delegate)
+                .appendByteArray(ipsDigest.get())
+                .build();
     }
 }
