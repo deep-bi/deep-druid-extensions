@@ -16,16 +16,19 @@
 package bi.deep.filtering.ip.range;
 
 import bi.deep.filtering.ip.range.impl.FixedSetIPFilterImpl;
+import bi.deep.util.CacheKeyUtil;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.RangeSet;
-import com.google.common.hash.Hashing;
 import inet.ipaddr.IPAddress;
 import inet.ipaddr.IPAddressString;
-import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
@@ -51,15 +54,20 @@ public class FixedSetIPFilter extends AbstractOptimizableDimFilter implements Di
 
     private final String dimension;
     private final Set<String> ranges;
+    // sorting and hashing a large set is costly and getCacheKey can run many times per query
+    private final Supplier<byte[]> rangesDigest;
 
     @JsonCreator
     public FixedSetIPFilter(@JsonProperty("dimension") String dimension, @JsonProperty("ranges") Set<String> ranges) {
         this.dimension = Preconditions.checkNotNull(dimension, "dimension");
-        this.ranges = Preconditions.checkNotNull(ranges, "ranges");
+        // snapshot so the memoised digest cannot drift from the values used for matching
+        this.ranges = Collections.unmodifiableSet(new LinkedHashSet<>(Preconditions.checkNotNull(ranges, "ranges")));
 
         if (CollectionUtils.isEmpty(this.ranges)) {
             throw InvalidInput.exception("range cannot be null or empty");
         }
+
+        this.rangesDigest = Suppliers.memoize(() -> CacheKeyUtil.hashStringsIgnoringOrder(this.ranges));
     }
 
     @Override
@@ -101,9 +109,7 @@ public class FixedSetIPFilter extends AbstractOptimizableDimFilter implements Di
         return new CacheKeyBuilder(CACHE_ID)
                 .appendString(dimension)
                 .appendByte(DimFilterUtils.STRING_SEPARATOR)
-                .appendByteArray(Hashing.sha256()
-                        .hashString(ranges.toString(), StandardCharsets.UTF_8)
-                        .asBytes())
+                .appendByteArray(rangesDigest.get())
                 .build();
     }
 }
