@@ -22,8 +22,8 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.google.common.base.Preconditions;
 import inet.ipaddr.IPAddress;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
+import org.apache.druid.query.cache.CacheKeyBuilder;
 import org.apache.druid.query.dimension.DimensionSpec;
 import org.apache.druid.query.extraction.ExtractionFn;
 import org.apache.druid.segment.DimensionSelector;
@@ -34,7 +34,9 @@ public class IPRangeFilteredDimensionSpec implements DimensionSpec {
     public static final byte CACHE_TYPE_ID_IP_RANGE_DIM = 0x5;
     private final String name;
     private final DimensionSpec delegate;
-    private final List<IPAddress> ips;
+    // one instance per spec: Druid calls getExtractionFn() per selector and capability check, and the function
+    // holds the snapshot of the IPs and their memoised digest
+    private final IPRangeFilteredExtractionFn extractionFn;
 
     @JsonCreator
     public IPRangeFilteredDimensionSpec(
@@ -46,7 +48,7 @@ public class IPRangeFilteredDimensionSpec implements DimensionSpec {
         }
         this.name = Preconditions.checkNotNull(name, "name must be defined");
         this.delegate = Preconditions.checkNotNull(delegate, "delegate");
-        this.ips = ips;
+        this.extractionFn = new IPRangeFilteredExtractionFn(ips);
     }
 
     public static DimensionSelector makeDimensionSelector(Set<String> values, DimensionSelector valueSelector) {
@@ -61,7 +63,7 @@ public class IPRangeFilteredDimensionSpec implements DimensionSpec {
 
     @JsonProperty("values")
     public List<IPAddress> getIps() {
-        return ips;
+        return extractionFn.getIps();
     }
 
     @Override
@@ -82,7 +84,7 @@ public class IPRangeFilteredDimensionSpec implements DimensionSpec {
 
     @Override
     public ExtractionFn getExtractionFn() {
-        return new IPRangeFilteredExtractionFn(ips);
+        return extractionFn;
     }
 
     @Override
@@ -97,16 +99,20 @@ public class IPRangeFilteredDimensionSpec implements DimensionSpec {
 
     @Override
     public boolean preservesOrdering() {
-        return Objects.requireNonNull(getExtractionFn()).preservesOrdering();
+        return extractionFn.preservesOrdering();
     }
 
     @Override
     public DimensionSpec withDimension(String newDimension) {
-        return new IPRangeFilteredDimensionSpec(name, delegate.withDimension(newDimension), ips);
+        return new IPRangeFilteredDimensionSpec(name, delegate.withDimension(newDimension), getIps());
     }
 
     @Override
     public byte[] getCacheKey() {
-        return new byte[] {CACHE_TYPE_ID_IP_RANGE_DIM};
+        return new CacheKeyBuilder(CACHE_TYPE_ID_IP_RANGE_DIM)
+                .appendString(name)
+                .appendCacheable(delegate)
+                .appendCacheable(extractionFn)
+                .build();
     }
 }

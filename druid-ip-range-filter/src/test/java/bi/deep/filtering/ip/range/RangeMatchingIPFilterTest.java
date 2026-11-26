@@ -15,6 +15,7 @@
  */
 package bi.deep.filtering.ip.range;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -22,9 +23,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import bi.deep.entity.IPSetContents;
 import bi.deep.filtering.ip.range.impl.RangeMatchingIPFilterImpl;
 import bi.deep.range.IPBoundedRange;
+import com.google.common.collect.ImmutableSet;
 import inet.ipaddr.IPAddress;
 import inet.ipaddr.IPAddressString;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import org.apache.druid.query.filter.Filter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -127,5 +131,47 @@ public class RangeMatchingIPFilterTest {
     @Test
     public void testV6FilterMatchingVersionMismatch() {
         testFilterMatching(ipV6Address, false, false, true, false, false);
+    }
+
+    @Test
+    public void testCacheKeyDiffersForDifferentValues() {
+        final RangeMatchingIPFilter a =
+                new RangeMatchingIPFilter("dimension", ImmutableSet.of("10.0.0.1", "192.168.0.1"), false);
+        final RangeMatchingIPFilter b =
+                new RangeMatchingIPFilter("dimension", ImmutableSet.of("10.0.0.2", "192.168.0.2"), false);
+
+        assertFalse(Arrays.equals(a.getCacheKey(), b.getCacheKey()));
+    }
+
+    @Test
+    public void testCacheKeyIgnoresValueOrder() {
+        final RangeMatchingIPFilter a = new RangeMatchingIPFilter(
+                "dimension", new LinkedHashSet<>(Arrays.asList("10.0.0.1", "192.168.0.1", "::1")), false);
+        final RangeMatchingIPFilter b = new RangeMatchingIPFilter(
+                "dimension", new LinkedHashSet<>(Arrays.asList("::1", "192.168.0.1", "10.0.0.1")), false);
+
+        assertArrayEquals(a.getCacheKey(), b.getCacheKey());
+    }
+
+    @Test
+    public void testCacheKeyDoesNotCollideOnValueBoundaries() {
+        // a naive join of the strings would make these two sets indistinguishable
+        final RangeMatchingIPFilter a =
+                new RangeMatchingIPFilter("dimension", ImmutableSet.of("10.0.0.1, 10.0.0.2"), false);
+        final RangeMatchingIPFilter b =
+                new RangeMatchingIPFilter("dimension", ImmutableSet.of("10.0.0.1", "10.0.0.2"), false);
+
+        assertFalse(Arrays.equals(a.getCacheKey(), b.getCacheKey()));
+    }
+
+    @Test
+    public void testCacheKeyDiffersByDimensionAndVersionFlag() {
+        final RangeMatchingIPFilter base = new RangeMatchingIPFilter("dimension", ImmutableSet.of("10.0.0.1"), false);
+        final RangeMatchingIPFilter otherDim = new RangeMatchingIPFilter("other", ImmutableSet.of("10.0.0.1"), false);
+        final RangeMatchingIPFilter otherFlag =
+                new RangeMatchingIPFilter("dimension", ImmutableSet.of("10.0.0.1"), true);
+
+        assertFalse(Arrays.equals(base.getCacheKey(), otherDim.getCacheKey()));
+        assertFalse(Arrays.equals(base.getCacheKey(), otherFlag.getCacheKey()));
     }
 }

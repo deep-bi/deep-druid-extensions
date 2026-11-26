@@ -15,11 +15,15 @@
  */
 package bi.deep.matching;
 
+import bi.deep.util.CacheKeyUtil;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import org.apache.druid.query.cache.CacheKeyBuilder;
@@ -33,14 +37,17 @@ import org.apache.druid.segment.VirtualColumn;
 import org.apache.druid.segment.column.ColumnCapabilities;
 import org.apache.druid.segment.column.ColumnCapabilitiesImpl;
 import org.apache.druid.segment.column.ColumnType;
+import org.apache.druid.segment.virtual.VirtualColumnCacheHelper;
 
-@JsonTypeName("ip-range-filtered")
+@JsonTypeName(IPRangeFilteredVirtualColumn.TYPE_NAME)
 public class IPRangeFilteredVirtualColumn implements VirtualColumn {
 
-    public static final byte CACHE_TYPE_ID_IP_RANGE_VC = 0x04;
+    public static final String TYPE_NAME = "ip-range-filtered";
     private final String name;
     private final DimensionSpec delegate;
     private final Set<String> ips;
+    // hashing a large set is costly and getCacheKey can run many times per query
+    private final Supplier<byte[]> ipsDigest;
 
     @JsonCreator
     public IPRangeFilteredVirtualColumn(
@@ -52,7 +59,10 @@ public class IPRangeFilteredVirtualColumn implements VirtualColumn {
         }
         this.name = Preconditions.checkNotNull(name, "name must be defined");
         this.delegate = Preconditions.checkNotNull(delegate, "delegate");
-        this.ips = ips;
+        // snapshot so the memoised digest cannot drift from the values used for matching
+        this.ips = Collections.unmodifiableSet(new LinkedHashSet<>(ips));
+        // order-preserving: the selector lists matches in the iteration order of ips
+        this.ipsDigest = Suppliers.memoize(() -> CacheKeyUtil.hashStrings(this.ips));
     }
 
     @JsonProperty("name")
@@ -103,10 +113,11 @@ public class IPRangeFilteredVirtualColumn implements VirtualColumn {
 
     @Override
     public byte[] getCacheKey() {
-        CacheKeyBuilder builder = new CacheKeyBuilder(CACHE_TYPE_ID_IP_RANGE_VC)
+        CacheKeyBuilder builder = new CacheKeyBuilder(VirtualColumnCacheHelper.CACHE_TYPE_ID_USER_DEFINED)
+                .appendString(TYPE_NAME)
                 .appendString(name)
                 .appendCacheable(delegate)
-                .appendStringsIgnoringOrder(ips);
+                .appendByteArray(ipsDigest.get());
         return builder.build();
     }
 }
