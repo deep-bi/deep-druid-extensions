@@ -21,3 +21,8 @@ following command in the `$DRUID_HOME` directory:
 ```bash
 java -classpath "./lib/*" org.apache.druid.cli.Main tools pull-deps -c bi.deep:druid-filtering-emitter:33.0.0
 ```
+
+## Versioning
+
+Use the highest release that starts with your Druid version. Release `38.0.0` is built for Druid 38.0.0, and later
+releases for the same Druid version add a fourth number: `38.0.0.1`, `38.0.0.2` and so on.
