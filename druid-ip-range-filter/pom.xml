@@ -74,8 +74,7 @@
   </dependencies>
 
   <build>
-    <!-- <finalName>${project.artifactId}-${project.version}-${druid.version}</finalName> -->
-    <finalName>${project.artifactId}-${druid.version}-${project.version}</finalName>
+    <finalName>${project.artifactId}-${project.version}</finalName>
 
     <plugins>
       <plugin>
@@ -94,8 +93,6 @@
         <configuration>
           <archive>
             <manifestEntries>
-              <Implementation-Title>${project.artifactId}</Implementation-Title>
-              <Implementation-Version>${druid.version}-${project.version}</Implementation-Version>
               <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
             </manifestEntries>
           </archive>
