@@ -47,10 +47,6 @@ public class IPRangeFilteredExtractionFn extends DimExtractionFn {
         return ips;
     }
 
-    byte[] getIpsDigest() {
-        return ipsDigest.get();
-    }
-
     // order-preserving because apply() lists matches in the order of ips
     private static byte[] digest(List<IPAddress> ips) {
         return CacheKeyUtil.hashStrings(

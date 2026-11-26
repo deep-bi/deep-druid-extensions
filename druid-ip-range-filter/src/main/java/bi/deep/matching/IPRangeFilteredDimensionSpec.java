@@ -112,7 +112,7 @@ public class IPRangeFilteredDimensionSpec implements DimensionSpec {
         return new CacheKeyBuilder(CACHE_TYPE_ID_IP_RANGE_DIM)
                 .appendString(name)
                 .appendCacheable(delegate)
-                .appendByteArray(extractionFn.getIpsDigest())
+                .appendCacheable(extractionFn)
                 .build();
     }
 }
