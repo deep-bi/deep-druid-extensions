@@ -22,8 +22,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.druid.java.util.emitter.core.Event;
 import org.apache.druid.java.util.emitter.service.ServiceMetricEvent;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class EventFilterTest {
 
@@ -77,7 +77,7 @@ public class EventFilterTest {
         Event event = makeEvent("abc", 1);
         EventFilter filter = builder().build();
 
-        Assert.assertTrue(filter.test(event)); // true - no rules to follow
+        Assertions.assertTrue(filter.test(event)); // true - no rules to follow
     }
 
     @Test
@@ -93,10 +93,10 @@ public class EventFilterTest {
                 .withStartsWith("b")
                 .build();
 
-        Assert.assertTrue(filter.test(e1));
-        Assert.assertFalse(filter.test(e2));
-        Assert.assertFalse(filter.test(e3));
-        Assert.assertTrue(filter.test(e4));
+        Assertions.assertTrue(filter.test(e1));
+        Assertions.assertFalse(filter.test(e2));
+        Assertions.assertFalse(filter.test(e3));
+        Assertions.assertTrue(filter.test(e4));
     }
 
     @Test
@@ -108,10 +108,10 @@ public class EventFilterTest {
 
         EventFilter filter = builder().withExcluded("b/1").build();
 
-        Assert.assertTrue(filter.test(e1));
-        Assert.assertTrue(filter.test(e2));
-        Assert.assertFalse(filter.test(e3));
-        Assert.assertTrue(filter.test(e4));
+        Assertions.assertTrue(filter.test(e1));
+        Assertions.assertTrue(filter.test(e2));
+        Assertions.assertFalse(filter.test(e3));
+        Assertions.assertTrue(filter.test(e4));
     }
 
     @Test
@@ -123,10 +123,10 @@ public class EventFilterTest {
 
         EventFilter filter = builder().withExcluded("b/1").build();
 
-        Assert.assertTrue(filter.test(e1));
-        Assert.assertTrue(filter.test(e2));
-        Assert.assertFalse(filter.test(e3));
-        Assert.assertTrue(filter.test(e4));
+        Assertions.assertTrue(filter.test(e1));
+        Assertions.assertTrue(filter.test(e2));
+        Assertions.assertFalse(filter.test(e3));
+        Assertions.assertTrue(filter.test(e4));
     }
 
     @Test
@@ -137,9 +137,9 @@ public class EventFilterTest {
 
         EventFilter filter = builder().withAllowed("abc", "def").build();
 
-        Assert.assertTrue(filter.test(e1)); // because abc on list
-        Assert.assertTrue(filter.test(e2)); // because def on list
-        Assert.assertFalse(filter.test(e3)); // because ghi is not on allowed
+        Assertions.assertTrue(filter.test(e1)); // because abc on list
+        Assertions.assertTrue(filter.test(e2)); // because def on list
+        Assertions.assertFalse(filter.test(e3)); // because ghi is not on allowed
     }
 
     @Test
@@ -151,9 +151,9 @@ public class EventFilterTest {
         EventFilter filter =
                 builder().withAllowed("abc", "def").withKey("_metric_").build();
 
-        Assert.assertTrue(filter.test(e1)); // because _metric_ is not in the event
-        Assert.assertTrue(filter.test(e2)); // because _metric_ is not in the event
-        Assert.assertTrue(filter.test(e3)); // because _metric_ is not in the event
+        Assertions.assertTrue(filter.test(e1)); // because _metric_ is not in the event
+        Assertions.assertTrue(filter.test(e2)); // because _metric_ is not in the event
+        Assertions.assertTrue(filter.test(e3)); // because _metric_ is not in the event
     }
 
     @Test
@@ -164,15 +164,15 @@ public class EventFilterTest {
 
         EventFilter filter = builder().withExcluded("e1", "e2").build();
 
-        Assert.assertFalse(filter.test(e1)); // because 'e1' on exclude list
-        Assert.assertFalse(filter.test(e2)); // because 'e2' on exclude list
-        Assert.assertTrue(
+        Assertions.assertFalse(filter.test(e1)); // because 'e1' on exclude list
+        Assertions.assertFalse(filter.test(e2)); // because 'e2' on exclude list
+        Assertions.assertTrue(
                 filter.test(e3)); // because 'e3' not on exclude list and allow list is empty (everything passes)
     }
 
     @Test
     public void testAllowedExcludedList() {
-        Assert.assertThrows(
+        Assertions.assertThrows(
                 RuntimeException.class,
                 () -> builder().withAllowed("e1").withExcluded("e2").build());
     }
@@ -185,9 +185,9 @@ public class EventFilterTest {
 
         EventFilter filter = builder().withStartsWith("a").build();
 
-        Assert.assertTrue(filter.test(e1)); // because 'a1' starts with 'a'
-        Assert.assertTrue(filter.test(e2)); // because 'a2' starts with 'a'
-        Assert.assertFalse(filter.test(e3)); // because 'b3' starts with 'b'
+        Assertions.assertTrue(filter.test(e1)); // because 'a1' starts with 'a'
+        Assertions.assertTrue(filter.test(e2)); // because 'a2' starts with 'a'
+        Assertions.assertFalse(filter.test(e3)); // because 'b3' starts with 'b'
     }
 
     @Test
@@ -199,9 +199,9 @@ public class EventFilterTest {
         EventFilter filter =
                 builder().withExcluded("a1", "a2").withStartsWith("a").build();
 
-        Assert.assertFalse(filter.test(e1)); // because 'a1' is excluded
-        Assert.assertFalse(filter.test(e2)); // because 'a2' is excluded
-        Assert.assertTrue(filter.test(e3)); // because 'a3' starts with 'a'
+        Assertions.assertFalse(filter.test(e1)); // because 'a1' is excluded
+        Assertions.assertFalse(filter.test(e2)); // because 'a2' is excluded
+        Assertions.assertTrue(filter.test(e3)); // because 'a3' starts with 'a'
     }
 
     @Test
@@ -214,11 +214,11 @@ public class EventFilterTest {
 
         EventFilter filter = builder().withRegex("a\\d+").build();
 
-        Assert.assertTrue(filter.test(e1)); // because 'a1' matches regex
-        Assert.assertTrue(filter.test(e2)); // because 'a2' matches regex
-        Assert.assertTrue(filter.test(e3)); // because 'a123' matches regex
-        Assert.assertFalse(filter.test(e4)); // because 'b12' doesn't match regex
-        Assert.assertFalse(filter.test(e5)); // because '123' doesn't match regex
+        Assertions.assertTrue(filter.test(e1)); // because 'a1' matches regex
+        Assertions.assertTrue(filter.test(e2)); // because 'a2' matches regex
+        Assertions.assertTrue(filter.test(e3)); // because 'a123' matches regex
+        Assertions.assertFalse(filter.test(e4)); // because 'b12' doesn't match regex
+        Assertions.assertFalse(filter.test(e5)); // because '123' doesn't match regex
     }
 
     @Test
@@ -231,9 +231,9 @@ public class EventFilterTest {
         EventFilter filter =
                 builder().withExcluded("a1", "a2").withRegex("a\\d+").build();
 
-        Assert.assertFalse(filter.test(e1)); // because 'a1' is excluded
-        Assert.assertFalse(filter.test(e2)); // because 'a2' is excluded
-        Assert.assertTrue(filter.test(e3)); // because 'a3' matches regex
-        Assert.assertFalse(filter.test(e4)); // because 'b3' doesn't match regex
+        Assertions.assertFalse(filter.test(e1)); // because 'a1' is excluded
+        Assertions.assertFalse(filter.test(e2)); // because 'a2' is excluded
+        Assertions.assertTrue(filter.test(e3)); // because 'a3' matches regex
+        Assertions.assertFalse(filter.test(e4)); // because 'b3' doesn't match regex
     }
 }
