@@ -42,9 +42,9 @@ import org.apache.druid.segment.incremental.IncrementalIndexSchema;
 import org.apache.druid.segment.incremental.OnheapIncrementalIndex;
 import org.apache.druid.testing.InitializedNullHandlingTest;
 import org.joda.time.DateTime;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DistinctCountTimeseriesQueryTest extends InitializedNullHandlingTest {
     private static final String VISITOR_ID = "visitor_id";
@@ -54,7 +54,7 @@ public class DistinctCountTimeseriesQueryTest extends InitializedNullHandlingTes
     private TimeseriesQueryEngine engine;
     private IncrementalIndex index;
 
-    @Before
+    @BeforeEach
     public void setup() {
         engine = new TimeseriesQueryEngine();
         index = new OnheapIncrementalIndex.Builder()
@@ -91,7 +91,7 @@ public class DistinctCountTimeseriesQueryTest extends InitializedNullHandlingTes
                         new ExactDistinctCountAggregatorFactory("UV", ImmutableList.of(VISITOR_ID), 2, true)))
                 .build();
 
-        Assert.assertThrows(
+        Assertions.assertThrows(
                 RuntimeException.class,
                 () -> engine.process(
                                 queryToFail,

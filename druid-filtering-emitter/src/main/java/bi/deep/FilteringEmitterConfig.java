@@ -16,9 +16,9 @@
 package bi.deep;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
 import java.util.Collections;
 import java.util.Set;
-import javax.validation.constraints.NotNull;
 
 public class FilteringEmitterConfig {
 
